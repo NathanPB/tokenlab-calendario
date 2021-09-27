@@ -2,8 +2,18 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import '../services/firebase'
+import {useAuthState} from "react-firebase-hooks/auth";
+
+import AuthPageController from "./screen/auth/AuthPageController";
+import {auth} from "../services/firebase";
 
 function App() {
+  const [user, authLoading] = useAuthState(auth)
+
+  if (!user || authLoading) {
+    return <AuthPageController/>
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -13,11 +23,11 @@ function App() {
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
+          href="#"
           rel="noopener noreferrer"
+          onClick={() => auth.signOut()}
         >
-          Learn React
+          Logout
         </a>
       </header>
     </div>
