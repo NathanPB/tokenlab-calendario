@@ -1,0 +1,21 @@
+.Wrapper {
+
+  margin-left: 16px;
+  margin-right: 4px;
+  display: flex;
+
+  & > li {
+    width: 32px;
+    transition: margin-right .15s;
+    overflow: hidden;
+    display: inline-block;
+    border-radius: 100%;
+    border: solid 2px black;
+    margin-left: -16px;
+  }
+
+  & > li:hover {
+    margin-right: 4px;
+  }
+
+}

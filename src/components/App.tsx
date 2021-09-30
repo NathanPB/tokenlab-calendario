@@ -5,7 +5,10 @@ import '../services/firebase'
 import {useAuthState} from "react-firebase-hooks/auth";
 
 import AuthPageController from "./screen/auth/AuthPageController";
+import HomeScreen from './screen/HomeScreen';
+
 import {auth} from "../services/firebase";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
 
 function App() {
   const [user, authLoading] = useAuthState(auth)
@@ -15,22 +18,11 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="#"
-          rel="noopener noreferrer"
-          onClick={() => auth.signOut()}
-        >
-          Logout
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Switch>
+        <Route path="/" component={HomeScreen} exact/>
+      </Switch>
+    </BrowserRouter>
   );
 }
 
