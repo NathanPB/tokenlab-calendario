@@ -1,8 +1,9 @@
 import React from "react";
 import {useAuthState} from "react-firebase-hooks/auth";
-import {auth, db} from "../services/firebase";
-import UserAvatarList from "./utils/UserAvatarList";
-import {formatTimeString} from "../utils";
+import {auth, db} from "../../services/firebase";
+import UserAvatarList from "../utils/UserAvatarList";
+import {formatTimeString} from "../../utils";
+import classNames from "classnames";
 
 export type EventFeedItemArgs = {
   id: string
@@ -37,7 +38,12 @@ export default function EventFeedItem({ id, description, owner, guests, dateStar
   }
 
   return (
-    <article className="w-full p-3 rounded shadow-lg bg-gray-700 text-gray-300">
+    <article className={
+      classNames(
+        "mt-2 w-full p-3 rounded shadow-lg bg-gray-700 text-gray-300",
+        { "ring ring-green-500 my-4": status === Status.OCCURRING }
+      )
+    }>
       <div className="flex justify-between">
         <section>
           { description }
