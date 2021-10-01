@@ -55,7 +55,7 @@ export default function EventFeed({ onEdit }: { onEdit: (id: string)=>void }) {
           onEdit={onEdit}
         />
       </div>
-      )
+    )
   }
 
   const docsNowFiltered = docsNow
@@ -71,7 +71,4 @@ export default function EventFeed({ onEdit }: { onEdit: (id: string)=>void }) {
       { [...docsPast || []].reverse().map(makeEventFeedItem) }
     </>
   )
-
-
-
 }
