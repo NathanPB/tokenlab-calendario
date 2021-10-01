@@ -22,7 +22,7 @@ export default function CreateEventDialog({ visible, setVisible }: CreateEventDi
     e.preventDefault()
     await db.collection('events').add({
       owner: user.uid,
-      guests: [],
+      participants: [user.uid],
       description,
       dateStart,
       dateEnd

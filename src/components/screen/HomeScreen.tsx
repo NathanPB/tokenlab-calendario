@@ -1,6 +1,6 @@
 import React from "react";
-import EventFeedItem from "../EventFeedItem";
 import CreateEventDialog from "../dialog/CreateEventDialog";
+import EventFeed from "../feed/EventFeed";
 
 export default function HomeScreen() {
   const [showCreateDialog, setShowCreateDialog] = React.useState(false)
@@ -16,17 +16,9 @@ export default function HomeScreen() {
           Create Event
         </button>
 
-        <hr className="my-2"/>
+        <hr className="my-4"/>
 
-        <EventFeedItem
-          id={"a"}
-          description={"Event description goes here"}
-          owner={{ uid: "aa", name: "Nathan Bombana", email: "bondia" }}
-          guests={[]}
-          dateStart={new Date('2021-09-01')}
-          dateEnd={new Date('2021-09-02')}
-        />
-
+        <EventFeed/>
       </main>
     </div>
   )

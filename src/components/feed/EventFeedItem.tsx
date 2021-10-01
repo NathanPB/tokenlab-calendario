@@ -8,8 +8,8 @@ import classNames from "classnames";
 export type EventFeedItemArgs = {
   id: string
   description: string
-  owner: { uid: string, name: string, email: string }
-  guests: { uid: string, name: string, email: string }[]
+  owner: string,
+  participants: string[]
   dateStart: Date
   dateEnd: Date
 }
@@ -20,12 +20,15 @@ export enum Status {
   DONE
 }
 
-export default function EventFeedItem({ id, description, owner, guests, dateStart, dateEnd }: EventFeedItemArgs) {
-  const document = db.doc(`events/${id}`)
+export default function EventFeedItem({ id, description, owner, participants, dateStart, dateEnd, cancelled }: EventFeedItemArgs) {
+  const [user, loadingAuth] = useAuthState(auth)
+  const [participantsUsers, setParticipantsUsers] = React.useState<any[]>([])
 
-  const [currentUser, loadingAuth] = useAuthState(auth)
-  const isOwner = owner.uid === currentUser?.uid
-  const isGuest = guests.findIndex(it => it.uid === currentUser?.uid) !== -1
+  React.useEffect(() => {
+    Promise.all(
+      participants.map(uid => db.doc(`users/${uid}`).get())
+    ).then(setParticipantsUsers)
+  }, [participants])
 
   const status = +dateStart > Date.now()
     ? Status.FUTURE
@@ -47,6 +50,15 @@ export default function EventFeedItem({ id, description, owner, guests, dateStar
       <div className="flex justify-between">
         <section>
           { description }
+          { cancelled && <span className="text-red-500"><br/>Cancelled!</span> }
+          <br/>
+          {
+            (owner === user.uid && !cancelled && status !== Status.DONE) && (
+              <span className="text-blue-700 cursor-pointer" onClick={handleCancel}>
+                Cancel Event
+              </span>
+            )
+          }
         </section>
         <section>
           <span className="text-gray-400">
@@ -55,7 +67,17 @@ export default function EventFeedItem({ id, description, owner, guests, dateStar
             { status === Status.DONE && `${formatTimeString(Date.now() - +dateEnd)} ago` }
           </span>
           <UserAvatarList
-            users={[owner, ...guests]}
+            users={
+              participantsUsers.map(user =>
+                (
+                  {
+                    uid: user.id,
+                    email: user.data()!!.email,
+                    name: user.data()!!.name
+                  }
+                )
+              )
+            }
             extraIconsEnd={
               [() => <img src="https://ui-avatars.com/api/?name=%2B"/>]
             }
