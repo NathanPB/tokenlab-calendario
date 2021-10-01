@@ -85,7 +85,7 @@ export default function EventFeedItem({ id, description, owner, participants, da
         <section>
           <span className="text-gray-400">
             { status === Status.FUTURE && `In ${formatTimeString(+dateStart - Date.now())}`}
-            { status === Status.OCCURRING && "Occurring Now!" }
+            { (status === Status.OCCURRING && !cancelled) && "Occurring Now!" }
             { status === Status.DONE && `${formatTimeString(Date.now() - +dateEnd)} ago` }
           </span>
           <UserAvatarList
