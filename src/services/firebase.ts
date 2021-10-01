@@ -16,9 +16,6 @@ export const db = firebase.firestore()
 
 export async function registerWithEmailPwd(name: string, email: string, pwd: string) {
   const { user } = await auth.createUserWithEmailAndPassword(email, pwd)
-  await db.collection('users').add({
-    uid: user?.uid,
-    auth: 'local',
-    name, email
-  })
+  await db.doc(`users/${user?.uid}`)
+    .set({ auth: 'local', name, email })
 }
