@@ -25,6 +25,7 @@ export default function RegisterPage() {
     event.preventDefault()
     if (name && email && pwdStrength && EMAIL_REGEX.test(email) && email === emailConfirm) {
       registerWithEmailPwd(name, email, pwd)
+        .then(() => window.location.href = '/')
     }
   }
 
