@@ -52,6 +52,27 @@ export default function CreateEventDialog({ editId, clearEditId, visible, setVis
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
+    if (!dateEnd) return
+
+    const nearEventsBefore = await db.collection('events')
+      .where('participants', 'array-contains', user.uid)
+      .where('dateEnd', '>', firebase.firestore.Timestamp.fromDate(dateStart))
+      .orderBy('dateEnd')
+      .limit(10)
+      .get()
+
+    const nearEventsAfter = await db.collection('events')
+      .where('participants', 'array-contains', user.uid)
+      .where('dateStart', '<', firebase.firestore.Timestamp.fromDate(dateEnd))
+      .orderBy('dateStart')
+      .limit(10)
+      .get()
+
+    if (!nearEventsBefore.empty || !nearEventsAfter.empty) {
+      alert('Busy Boy! I cannot overlap events, please watch your schedule.')
+      return
+    }
+
     if (existing) {
       await db.doc(`events/${existing.id}`)
         .set({ description, dateStart, dateEnd }, { merge: true })
