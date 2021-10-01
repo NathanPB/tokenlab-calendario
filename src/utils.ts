@@ -3,6 +3,10 @@ export function formatTimeString(millis: number): string {
     return 'Now'
   }
 
+  if (millis < 3600000) {
+    return Math.floor(millis / 60000) + ' minutes'
+  }
+
   if (millis < 86400000) {
     return Math.floor(millis / 3600000) + ' hours'
   }
