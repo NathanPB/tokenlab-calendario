@@ -13,6 +13,7 @@ export type EventFeedItemArgs = {
   dateStart: Date
   dateEnd: Date
   cancelled: boolean
+  onEdit: (id: string)=>void
 }
 
 export enum Status {
@@ -21,7 +22,7 @@ export enum Status {
   DONE
 }
 
-export default function EventFeedItem({ id, description, owner, participants, dateStart, dateEnd, cancelled }: EventFeedItemArgs) {
+export default function EventFeedItem({ id, description, owner, participants, dateStart, dateEnd, cancelled, onEdit }: EventFeedItemArgs) {
   const [user, loadingAuth] = useAuthState(auth)
   const [participantsUsers, setParticipantsUsers] = React.useState<any[]>([])
 
@@ -49,6 +50,9 @@ export default function EventFeedItem({ id, description, owner, participants, da
     }
   }
 
+  const cancellable = owner === user.uid && !cancelled && status !== Status.DONE
+  const editable = owner === user.uid
+
   return (
     <article className={
       classNames(
@@ -63,9 +67,17 @@ export default function EventFeedItem({ id, description, owner, participants, da
           { cancelled && <span className="text-red-500"><br/>Cancelled!</span> }
           <br/>
           {
-            (owner === user.uid && !cancelled && status !== Status.DONE) && (
+            cancellable && (
               <span className="text-blue-700 cursor-pointer" onClick={handleCancel}>
-                Cancel Event
+                Cancel
+              </span>
+            )
+          }
+          { (cancellable && editable) && ' | '}
+          {
+            editable && (
+              <span className="text-blue-600 cursor-pointer" onClick={() => onEdit(id)}>
+                Edit
               </span>
             )
           }

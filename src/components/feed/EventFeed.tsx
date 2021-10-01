@@ -5,7 +5,7 @@ import {useCollectionData} from "react-firebase-hooks/firestore";
 import EventFeedItem from "./EventFeedItem";
 import firebase from "firebase/compat";
 
-export default function EventFeed() {
+export default function EventFeed({ onEdit }: { onEdit: (id: string)=>void }) {
   const [user, authLoading] = useAuthState(auth)
   const now = React.useMemo(() => firebase.firestore.Timestamp.now(), [])
 
@@ -41,16 +41,21 @@ export default function EventFeed() {
   }
 
   function makeEventFeedItem(doc: any) {
-    return <EventFeedItem
-      key={doc.id}
-      id={doc.id}
-      description={doc.description}
-      owner={doc.owner}
-      participants={doc.participants}
-      dateStart={new Date(doc.dateStart.seconds * 1000)}
-      dateEnd={new Date(doc.dateEnd.seconds * 1000)}
-      cancelled={!!doc.cancelled}
-    />
+    return (
+      <div>
+        <EventFeedItem
+          key={doc.id}
+          id={doc.id}
+          description={doc.description}
+          owner={doc.owner}
+          participants={doc.participants}
+          dateStart={new Date(doc.dateStart.seconds * 1000)}
+          dateEnd={new Date(doc.dateEnd.seconds * 1000)}
+          cancelled={!!doc.cancelled}
+          onEdit={onEdit}
+        />
+      </div>
+      )
   }
 
   const docsNowFiltered = docsNow?.filter(doc => docsPast?.findIndex(doc2 => doc2.id === doc.id) !== 0)
