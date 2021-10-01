@@ -58,15 +58,17 @@ export default function EventFeed({ onEdit }: { onEdit: (id: string)=>void }) {
       )
   }
 
-  const docsNowFiltered = docsNow?.filter(doc => docsPast?.findIndex(doc2 => doc2.id === doc.id) !== 0)
+  const docsNowFiltered = docsNow
+    ?.filter(doc => doc.dateEnd.seconds >= now.seconds)
+    ?.filter(doc => docsPast?.findIndex(doc2 => doc2.id === doc.id) !== 0)
 
   return (
     <>
-      { docsIncoming?.map(makeEventFeedItem) || null }
-      { docsNowFiltered?.length && <hr className="border-blue-500 my-4"/> }
-      { docsNowFiltered?.map(makeEventFeedItem) || null }
-      <hr className="border-blue-500 my-4"/>
-      { docsPast?.map(makeEventFeedItem) || null }
+      { [...docsIncoming || []].reverse().map(makeEventFeedItem) }
+      { !!docsNowFiltered?.length && <hr className="border-blue-500 my-4"/> }
+      { [...docsNowFiltered || []].map(makeEventFeedItem) }
+      { !!docsPast?.length && <hr className="border-blue-500 my-4"/> }
+      { [...docsPast || []].reverse().map(makeEventFeedItem) }
     </>
   )
 
