@@ -12,6 +12,7 @@ export type EventFeedItemArgs = {
   participants: string[]
   dateStart: Date
   dateEnd: Date
+  cancelled: boolean
 }
 
 export enum Status {
@@ -40,11 +41,20 @@ export default function EventFeedItem({ id, description, owner, participants, da
     return null
   }
 
+  function handleCancel() {
+    if (window.confirm('Sure?')) {
+      db.doc(`events/${id}`).update({
+        description, owner, participants, dateStart, dateEnd, cancelled: true
+      })
+    }
+  }
+
   return (
     <article className={
       classNames(
         "mt-2 w-full p-3 rounded shadow-lg bg-gray-700 text-gray-300",
-        { "ring ring-green-500 my-4": status === Status.OCCURRING }
+        { "ring ring-green-500 my-4": status === Status.OCCURRING && !cancelled },
+        { "ring ring-red-500 my-4": cancelled }
       )
     }>
       <div className="flex justify-between">
